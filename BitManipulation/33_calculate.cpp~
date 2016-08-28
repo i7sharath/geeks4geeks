@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int calculate7n8(int n)
+{
+	return n-(n>>3);
+}
+
+int main()
+{
+	int n;
+	cin>>n;
+	cout<<calculate7n/8(n)<<endl;
+	return 0;
+}
