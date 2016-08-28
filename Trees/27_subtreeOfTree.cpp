@@ -59,19 +59,33 @@ void inorder(TreeNode *root)
 	inorder(root->right);
 	return;
 }
+void preorder(TreeNode *root)
+{
+	if(root)
+	{
+		cout<<root->data<<" ";
+		preorder(root->left);
+		preorder(root->right);
+	}
+}
 
-bool issubtree(TreeNode *root1,TreeNode *root2)
+int isIdentical(TreeNode *root1,TreeNode *root2)
+{
+	if(root1==NULL && root2==NULL)
+		return 1;
+	if(root1==NULL || root2==NULL)
+		return 0;	
+	return (root1->data==root2->data &&  isIdentical(root1->left,root2->left) && isIdentical(root1->right,root2->right));
+}
+
+int isSubtree(TreeNode *root1,TreeNode *root2)
 {
 	if(root1==NULL)
 		return root2==NULL;
+	if(isIdentical(root1,root2))
+		return true;
 
-	if(root1->data==root2->data)
-	{
-		return isidentical
-	}
-	int lflag=isSubtree(root->left);
-	int rflag=issubtree(root->right);
-	if(lflag && rfl)
+	return isSubtree(root1->left,root2) || isSubtree(root1->right,root2);
 }
 
 int main()
@@ -83,23 +97,23 @@ int main()
 		cin>>vec[i];
 	TreeNode *root1=NULL;
 	root1=createTree(root1,vec);
-	inorder(root1);
+	preorder(root1);
 	cout<<endl;
 
 	int m;
+	cin>>m;
 	vector<int> subvec(m);
 	for(int i=0;i<m;i++)
 		cin>>subvec[i];
 	TreeNode *root2=NULL;
 	root2=createTree(root2,subvec);
-	inorder(root2);
+	preorder(root2);
 	cout<<endl;
-
-	bool flag=isSubtree(root);
-	if(flag)
+	
+	if(isSubtree(root1,root2))
 		cout<<"true"<<endl;
 	else
 		cout<<"False"<<endl;
 
-	return 0;
+	return 0;	
 }
