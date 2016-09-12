@@ -27,7 +27,6 @@ void inordertraversal(TreeNode *root)
 	return;
 }
 
-
 TreeNode *constructTree(vector<int> &preorder,vector<char> &preorderLN,int &index,int n)
 {
 	if(index==n)

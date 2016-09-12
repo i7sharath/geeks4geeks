@@ -56,6 +56,7 @@ TreeNode *constructTree(vector<int> &inorder,int start,int end)
 	return root;
 }
 
+
 int main()
 {
 	int n;
