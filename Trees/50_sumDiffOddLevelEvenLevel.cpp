@@ -50,42 +50,40 @@ TreeNode *createTree(TreeNode *root,vector<int> &vec)
 	return root;
 }
 
-void postOrderOneStack(TreeNode *root)
+int getDiffernceEvenOddLevel(TreeNode *root)
 {
-	stack<TreeNode*> st;
-	while(1)
-	{
-		while(root)
-		{
-			if(root->right)
-				st.push(root->right);
-			st.push(root);
-			root=root->left;
-		}
-		
-		root=st.top();
-		st.pop();
+	int diff=0;
+	if(root==NULL)
+		return diff;
 
-		if(st.empty())
+	queue<TreeNode *> q;
+	q.push(root);
+	q.push(NULL);
+	int odd=1,oddsum=0,evensum=0;
+	while(!q.empty())
+	{
+		TreeNode *temp=q.front();
+		q.pop();
+		if(temp)
 		{
-			cout<<root->data<<endl;
-			break;
-		}
-		if(root->right && root->right==st.top())
-		{
-			st.pop();
-			st.push(root);
-			root=root->right;
+			if(odd)
+				oddsum+=temp->data;
+			else
+				evensum+=temp->data;
+			if(temp->left)
+				q.push(temp->left);
+			if(temp->right)
+				q.push(temp->right);
 		}
 		else
 		{
-			cout<<root->data<<" ";
-			root=NULL;
+			if(!q.empty())
+				q.push(NULL);
+			odd=1-odd;
 		}
-		if(st.empty())
-			break;
-	}	
-	return;
+	}
+	diff=oddsum-evensum;
+	return diff;
 }
 
 int main()
@@ -98,6 +96,6 @@ int main()
 
 	TreeNode *root=NULL;
 	root=createTree(root,vec);
-	postOrderOneStack(root);
+	cout<<getDiffernceEvenOddLevel(root)<<endl;
 	return 0;
 }

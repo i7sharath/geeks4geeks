@@ -50,41 +50,28 @@ TreeNode *createTree(TreeNode *root,vector<int> &vec)
 	return root;
 }
 
-void postOrderOneStack(TreeNode *root)
+void printDoublyList(TreeNode *root)
 {
-	stack<TreeNode*> st;
-	while(1)
+	if(root==NULL)
+		return ;
+	while(root)
 	{
-		while(root)
-		{
-			if(root->right)
-				st.push(root->right);
-			st.push(root);
-			root=root->left;
-		}
-		
-		root=st.top();
-		st.pop();
+		cout<<root->data<<" ";
+		root=root->right;
+	}
+	return;
+}
 
-		if(st.empty())
-		{
-			cout<<root->data<<endl;
-			break;
-		}
-		if(root->right && root->right==st.top())
-		{
-			st.pop();
-			st.push(root);
-			root=root->right;
-		}
-		else
-		{
-			cout<<root->data<<" ";
-			root=NULL;
-		}
-		if(st.empty())
-			break;
-	}	
+void convertTreeToDoublyList(TreeNode *root,TreeNode * &pre)
+{
+	if(root==NULL)
+		return ;
+	convertTreeToDoublyList(root->left,pre);
+	root->left=pre;
+	if(pre)
+		pre->right=root;
+	pre=root;
+	convertTreeToDoublyList(root->right,pre);
 	return;
 }
 
@@ -98,6 +85,10 @@ int main()
 
 	TreeNode *root=NULL;
 	root=createTree(root,vec);
-	postOrderOneStack(root);
+	TreeNode *pre=NULL;
+	convertTreeToDoublyList(root,pre);
+	while(root && root->left)
+		root=root->left;
+	printDoublyList(root);
 	return 0;
 }

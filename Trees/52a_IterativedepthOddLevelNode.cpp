@@ -50,42 +50,40 @@ TreeNode *createTree(TreeNode *root,vector<int> &vec)
 	return root;
 }
 
-void postOrderOneStack(TreeNode *root)
+int depthOddLevelTree(TreeNode *root)
 {
-	stack<TreeNode*> st;
-	while(1)
+	if(root==NULL)
+		return 0;
+	queue<TreeNode*> q;
+	q.push(root);
+	q.push(NULL);
+	int h=1;
+	int ans=1;
+	int flag=0;
+	while(!q.empty())
 	{
-		while(root)
+		TreeNode *temp=q.front();
+		q.pop();
+		if(temp)
 		{
-			if(root->right)
-				st.push(root->right);
-			st.push(root);
-			root=root->left;
-		}
-		
-		root=st.top();
-		st.pop();
-
-		if(st.empty())
-		{
-			cout<<root->data<<endl;
-			break;
-		}
-		if(root->right && root->right==st.top())
-		{
-			st.pop();
-			st.push(root);
-			root=root->right;
+			if(temp->left)
+				q.push(temp->left);
+			if(temp->right)
+				q.push(temp->right);
 		}
 		else
 		{
-			cout<<root->data<<" ";
-			root=NULL;
+			if(!q.empty())
+			{
+				q.push(NULL);
+				h++;
+				if(flag)
+					ans=h;
+				flag=1-flag;
+			}	
 		}
-		if(st.empty())
-			break;
-	}	
-	return;
+	}
+	return ans;
 }
 
 int main()
@@ -98,6 +96,6 @@ int main()
 
 	TreeNode *root=NULL;
 	root=createTree(root,vec);
-	postOrderOneStack(root);
+	cout<<depthOddLevelTree(root)<<endl;
 	return 0;
 }

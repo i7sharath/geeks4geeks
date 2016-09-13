@@ -68,16 +68,12 @@ int checkBalancedTree(TreeNode *root,int &height)
 		return 1;
 	}
 	int lh=0,rh=0;
-	
 	int l=checkBalancedTree(root->left,lh);
 	int r=checkBalancedTree(root->right,rh);
 	height=max(lh,rh)+1;
-
 	if(abs(lh-rh)<=1)
 		return l && r;
-	else
-		return 0;
-
+	return 0;
 }
 
 int main()
