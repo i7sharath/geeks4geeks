@@ -60,50 +60,19 @@ void preorder(TreeNode *root)
 	return;
 }
 
-void printDoublyList(TreeNode *head)
-{
-	if(head==NULL)
-		return;
-	while(head)
-	{
-		cout<<head->data<<" ";
-		if(head->left)
-			cout<<"left:"<<head->left->data<<" ";
-		if(head->right)
-			cout<<"right:"<<head->right->data<<" ";
-		cout<<endl;
-		head=head->right;
-	}
-	return;
-}
-
-void convertLeafNodesDoublyList(TreeNode *root,TreeNode* head,TreeNode* &ans)
+void rootToLeafSum(TreeNode *root,vector<int> &ans,int sum)
 {
 	if(root==NULL)
 		return;
 	if(root->left==NULL && root->right==NULL)
 	{
-		if(ans==NULL)
-		{
-			head=root;
-			head->left=NULL;
-			head->right=NULL;
-			ans=head;
-		}
-		else
-		{
-			head->right=root;
-			if(head->right)
-				head->right->right=NULL;
-			else
-				head->right=NULL;
-			root->left=head;
-			head=head->right;
-		}
+		sum+=(root->data);
+		ans.push_back(sum);
 		return;
 	}
-	convertLeafNodesDoublyList(root->left,head,ans);
-	convertLeafNodesDoublyList(root->right,head,ans);
+	sum+=(root->data);
+	rootToLeafSum(root->left,ans,sum);
+	rootToLeafSum(root->right,ans,sum);
 	return;
 }
 
@@ -114,10 +83,14 @@ int main()
 	vector<int> vec(n);
 	for(int i=0;i<n;i++)
 		cin>>vec[i];
-	TreeNode *root=NULL;
-	root=createTree(root,vec);
-	TreeNode *head=NULL,*ans=NULL;
-	convertLeafNodesDoublyList(root,head,ans);
-	printDoublyList(ans);
+
+	TreeNode *root1=NULL;
+	root1=createTree(root1,vec);
+	vector<int> ans;
+	int sum=0;
+	rootToLeafSum(root1,ans,sum);
+	for(int i=0;i<ans.size();i++)
+		cout<<ans[i]<<" ";
+	cout<<endl;
 	return 0;
 }

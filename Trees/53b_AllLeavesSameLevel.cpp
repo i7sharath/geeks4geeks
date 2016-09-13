@@ -45,67 +45,27 @@ TreeNode *createTree(TreeNode *root,vector<int> &vec)
 		i++;
 		if(temp->right)
 			q.push(temp->right);
-
 	}
 	return root;
 }
 
-void preorder(TreeNode *root)
+int checkAllLeavesSameLevel(TreeNode *root,int level,int &leaflevel)
 {
 	if(root==NULL)
-		return;
-	cout<<root->data<<" ";
-	preorder(root->left);
-	preorder(root->right);
-	return;
-}
-
-void printDoublyList(TreeNode *head)
-{
-	if(head==NULL)
-		return;
-	while(head)
-	{
-		cout<<head->data<<" ";
-		if(head->left)
-			cout<<"left:"<<head->left->data<<" ";
-		if(head->right)
-			cout<<"right:"<<head->right->data<<" ";
-		cout<<endl;
-		head=head->right;
-	}
-	return;
-}
-
-void convertLeafNodesDoublyList(TreeNode *root,TreeNode* head,TreeNode* &ans)
-{
-	if(root==NULL)
-		return;
+		return 1;
 	if(root->left==NULL && root->right==NULL)
 	{
-		if(ans==NULL)
+		if(leaflevel==0)
 		{
-			head=root;
-			head->left=NULL;
-			head->right=NULL;
-			ans=head;
+			leaflevel=level;
+			return 1;
 		}
 		else
-		{
-			head->right=root;
-			if(head->right)
-				head->right->right=NULL;
-			else
-				head->right=NULL;
-			root->left=head;
-			head=head->right;
-		}
-		return;
-	}
-	convertLeafNodesDoublyList(root->left,head,ans);
-	convertLeafNodesDoublyList(root->right,head,ans);
-	return;
-}
+			return(level==leaflevel);
+	}	
+	return checkAllLeavesSameLevel(root->left,level+1,leaflevel) && 
+		   checkAllLeavesSameLevel(root->right,level+1,leaflevel);
+}	
 
 int main()
 {
@@ -114,10 +74,14 @@ int main()
 	vector<int> vec(n);
 	for(int i=0;i<n;i++)
 		cin>>vec[i];
+
 	TreeNode *root=NULL;
 	root=createTree(root,vec);
-	TreeNode *head=NULL,*ans=NULL;
-	convertLeafNodesDoublyList(root,head,ans);
-	printDoublyList(ans);
+	int level=0,leaflevel=0;
+	int flag=checkAllLeavesSameLevel(root,level,leaflevel);
+	if(flag)
+		cout<<"true"<<endl;
+	else
+		cout<<"False"<<endl;
 	return 0;
 }

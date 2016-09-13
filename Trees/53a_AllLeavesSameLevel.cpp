@@ -45,33 +45,46 @@ TreeNode *createTree(TreeNode *root,vector<int> &vec)
 		i++;
 		if(temp->right)
 			q.push(temp->right);
-
 	}
 	return root;
 }
 
-void inorder(TreeNode *root)
+int checkAllLeavesSameLevel(TreeNode *root)
 {
 	if(root==NULL)
-		return;
-	inorder(root->left);
-	cout<<root->data<<" ";
-	inorder(root->right);
-	return;
-}
-
-int CheckrootToLeafSum(TreeNode *root,int sum,int val)
-{
-	if(root==NULL)
-		return 0;
-	if(root->left==NULL && root->right==NULL)
+		return 1;
+	queue<TreeNode*> q;
+	int flag=0;
+	if(root->left)
+		q.push(root->left);
+	if(root->right)
+		q.push(root->right);
+	q.push(NULL);
+	while(!q.empty())
 	{
-		val+=root->data;
-		return (val==sum);
+		TreeNode *temp=q.front();
+		q.pop();
+		if(temp)
+		{
+			if(temp->left==NULL && temp->right==NULL)
+				flag=1;
+			if(temp->left)
+				q.push(temp->left);
+			if(temp->right)
+				q.push(temp->right);
+		}
+		else
+		{	
+			if(!q.empty())
+			{
+				if(flag==1)
+					return 0;
+				q.push(NULL);
+			}
+		}
 	}
-	val+=root->data;
-	return CheckrootToLeafSum(root->left,sum,val) || CheckrootToLeafSum(root->right,sum,val);
-}
+	return 1;
+}	
 
 int main()
 {
@@ -83,11 +96,7 @@ int main()
 
 	TreeNode *root=NULL;
 	root=createTree(root,vec);
-	inorder(root);
-	cout<<endl;
-	int sum;
-	cin>>sum;
-	int flag=CheckrootToLeafSum(root,sum,0);
+	int flag=checkAllLeavesSameLevel(root);
 	if(flag)
 		cout<<"true"<<endl;
 	else
