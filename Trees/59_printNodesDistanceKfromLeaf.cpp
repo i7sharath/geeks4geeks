@@ -50,30 +50,31 @@ TreeNode *createTree(TreeNode *root,vector<int> &vec)
 	return root;
 }
 
-void inorder(TreeNode *root)
+void preorder(TreeNode *root)
 {
 	if(root==NULL)
 		return;
-	inorder(root->left);
 	cout<<root->data<<" ";
-	inorder(root->right);
+	preorder(root->left);
+	preorder(root->right);
 	return;
 }
 
-void getLevelOfNode(TreeNode *root,int &ans,int index,int element)
+void distancefromLeaf(TreeNode *root,vector<int> path,set<int> &s,int k)
 {
-	if(root)
-	{	
-		if(root->data==element)
-		{
-			ans=index;
-			return;
-		}
-		getLevelOfNode(root->left,ans,index+1,element);
-		getLevelOfNode(root->right,ans,index+1,element);
+	if(root==NULL)
+		return ;
+	if(root->left==NULL && root->right==NULL)
+	{
+		s.insert(path[path.size()-k]);
+		return;
 	}
+	path.push_back(root->data);
+	distancefromLeaf(root->left,path,s,k);
+	distancefromLeaf(root->right,path,s,k);
 	return;
 }
+
 
 int main()
 {
@@ -82,16 +83,18 @@ int main()
 	vector<int> vec(n);
 	for(int i=0;i<n;i++)
 		cin>>vec[i];
-
-	int element;
-	cin>>element;
-
+	int k;
+	cin>>k;
 	TreeNode *root=NULL;
 	root=createTree(root,vec);
-	inorder(root);
+	vector<int> path;
+	set<int> s;
+	distancefromLeaf(root,path,s,k);
+
+	set<int>::iterator sit;
+	for(sit=s.begin();sit!=s.end();sit++)
+		cout<<*sit<<" ";
 	cout<<endl;
-	int ans=0;
-	getLevelOfNode(root,ans,1,element);
-	cout<<ans<<endl;
+	
 	return 0;
 }

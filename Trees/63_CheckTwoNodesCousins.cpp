@@ -50,29 +50,46 @@ TreeNode *createTree(TreeNode *root,vector<int> &vec)
 	return root;
 }
 
-void inorder(TreeNode *root)
+void preorder(TreeNode *root)
 {
 	if(root==NULL)
 		return;
-	inorder(root->left);
 	cout<<root->data<<" ";
-	inorder(root->right);
+	preorder(root->left);
+	preorder(root->right);
 	return;
 }
 
-void getLevelOfNode(TreeNode *root,int &ans,int index,int element)
+int IsSiblings(TreeNode *root,int a,int b)
 {
-	if(root)
-	{	
-		if(root->data==element)
-		{
-			ans=index;
-			return;
-		}
-		getLevelOfNode(root->left,ans,index+1,element);
-		getLevelOfNode(root->right,ans,index+1,element);
-	}
-	return;
+	if(root==NULL)
+		return 0;
+	if(root->left==NULL && root->right==NULL)
+		return 0;
+	if((root->left->data==a && root->right->data==b) || (root->left->data==b && root->right->data==a))
+		return 1;
+	
+	return IsSiblings(root->left,a,b) || IsSiblings(root->right,a,b);
+}
+
+int findLevel(TreeNode *root,int a,int index)
+{
+	if(root==NULL)
+		return 0;
+	if(root->data==a)
+		return index;
+	int lindex=findLevel(root->left,a,index+1);
+	if(lindex!=0)
+		return lindex;
+	return findLevel(root->right,a,index+1);
+}
+
+int IsCousins(TreeNode *root,int a,int b)
+{
+	if((findLevel(root,a,1)==findLevel(root,b,1)) && !IsSiblings(root,a,b))
+		return 1;
+	else
+		return 0;
 }
 
 int main()
@@ -82,16 +99,10 @@ int main()
 	vector<int> vec(n);
 	for(int i=0;i<n;i++)
 		cin>>vec[i];
-
-	int element;
-	cin>>element;
-
+	int a,b;
+	cin>>a>>b;
 	TreeNode *root=NULL;
 	root=createTree(root,vec);
-	inorder(root);
-	cout<<endl;
-	int ans=0;
-	getLevelOfNode(root,ans,1,element);
-	cout<<ans<<endl;
+	cout<<IsCousins(root,a,b)<<endl;
 	return 0;
 }

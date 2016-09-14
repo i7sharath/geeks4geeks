@@ -50,28 +50,32 @@ TreeNode *createTree(TreeNode *root,vector<int> &vec)
 	return root;
 }
 
-void inorder(TreeNode *root)
+void preorder(TreeNode *root)
 {
 	if(root==NULL)
 		return;
-	inorder(root->left);
 	cout<<root->data<<" ";
-	inorder(root->right);
+	preorder(root->left);
+	preorder(root->right);
 	return;
 }
 
-void getLevelOfNode(TreeNode *root,int &ans,int index,int element)
+void Helper(TreeNode *root1,TreeNode *root2,int index)
 {
-	if(root)
-	{	
-		if(root->data==element)
-		{
-			ans=index;
-			return;
-		}
-		getLevelOfNode(root->left,ans,index+1,element);
-		getLevelOfNode(root->right,ans,index+1,element);
-	}
+	if(root1==NULL && root2==NULL)
+		return;
+	if(index%2==0)
+		swap(root1->data,root2->data);
+	Helper(root1->left,root2->right,index+1);
+	Helper(root1->right,root2->left,index+1);
+	return;
+}
+
+void reverseAlternateLevels(TreeNode *root)
+{
+	if(root==NULL)
+		return;
+	Helper(root->left,root->right,0);
 	return;
 }
 
@@ -82,16 +86,9 @@ int main()
 	vector<int> vec(n);
 	for(int i=0;i<n;i++)
 		cin>>vec[i];
-
-	int element;
-	cin>>element;
-
 	TreeNode *root=NULL;
 	root=createTree(root,vec);
-	inorder(root);
-	cout<<endl;
-	int ans=0;
-	getLevelOfNode(root,ans,1,element);
-	cout<<ans<<endl;
+	reverseAlternateLevels(root);
+	preorder(root);
 	return 0;
 }
