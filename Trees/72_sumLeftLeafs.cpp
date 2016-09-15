@@ -5,7 +5,7 @@ using namespace std;
 struct TreeNode
 {
 	int data;
-	TreeNode *left,*right,*next;
+	TreeNode *left,*right;
 };
 
 TreeNode *createNewNode(int data)
@@ -16,7 +16,6 @@ TreeNode *createNewNode(int data)
 	newNode->data=data;
 	newNode->left=NULL;
 	newNode->right=NULL;
-	newNode->next=NULL;
 	return newNode;
 }
 
@@ -61,46 +60,17 @@ void inorder(TreeNode *root)
 	return;
 }
 
-void printNextPointers(TreeNode *root)
+void sumLeftLeafs(TreeNode *root,int &sum)
 {
 	if(root==NULL)
 		return;
-	if(root)
-	{
-		cout<<root->data<<":";
-		if(root->next)
-			cout<<root->next->data;
-		cout<<endl;
-	}
-	printNextPointers(root->left);
-	printNextPointers(root->right);
+	if(root->left==NULL && root->right==NULL)
+		return;
+	if(root->left && root->left->left==NULL)
+		sum+=(root->left->data);
+	sumLeftLeafs(root->left,sum);
+	sumLeftLeafs(root->right,sum);
 	return;
-}
-
-TreeNode *Helper(TreeNode *root)
-{
-	if(root==NULL)
-		return root;
-	if(root->left)
-		root->left->next=root->right;
-	if(root->right)
-	{
-		if(root->next)
-			root->right->next=root->next->left;
-		else
-			root->right->next=NULL;
-	}
-	Helper(root->left);
-	Helper(root->right);
-	return root;
-}
-
-TreeNode *populateNextPointers(TreeNode *root)
-{
-	if(root==NULL)
-		return root;
-	root->next=NULL;
-	return Helper(root);
 }
 
 int main()
@@ -110,12 +80,10 @@ int main()
 	vector<int> vec(n);
 	for(int i=0;i<n;i++)
 		cin>>vec[i];
-
 	TreeNode *root=NULL;
 	root=createTree(root,vec);
-	inorder(root);
-	cout<<endl;	
-	root=populateNextPointers(root);
-	printNextPointers(root);
+	int sum=0;
+	sumLeftLeafs(root,sum);
+	cout<<sum<<endl;
 	return 0;
 }

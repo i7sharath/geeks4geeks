@@ -5,7 +5,7 @@ using namespace std;
 struct TreeNode
 {
 	int data;
-	TreeNode *left,*right,*next;
+	TreeNode *left,*right;
 };
 
 TreeNode *createNewNode(int data)
@@ -16,7 +16,6 @@ TreeNode *createNewNode(int data)
 	newNode->data=data;
 	newNode->left=NULL;
 	newNode->right=NULL;
-	newNode->next=NULL;
 	return newNode;
 }
 
@@ -61,46 +60,27 @@ void inorder(TreeNode *root)
 	return;
 }
 
-void printNextPointers(TreeNode *root)
+void Helper(TreeNode *root,int index,map<int,int> &m)
 {
 	if(root==NULL)
 		return;
-	if(root)
-	{
-		cout<<root->data<<":";
-		if(root->next)
-			cout<<root->next->data;
-		cout<<endl;
-	}
-	printNextPointers(root->left);
-	printNextPointers(root->right);
+	m[index]+=(root->data);
+	Helper(root->left,index+1,m);
+	Helper(root->right,index,m);
 	return;
 }
 
-TreeNode *Helper(TreeNode *root)
+void diagonalSum(TreeNode *root)
 {
-	if(root==NULL)
-		return root;
-	if(root->left)
-		root->left->next=root->right;
-	if(root->right)
-	{
-		if(root->next)
-			root->right->next=root->next->left;
-		else
-			root->right->next=NULL;
-	}
-	Helper(root->left);
-	Helper(root->right);
-	return root;
-}
+	map<int,int> m;
+	map<int,int>::iterator it;
+	int index=0;
+	Helper(root,index,m);
 
-TreeNode *populateNextPointers(TreeNode *root)
-{
-	if(root==NULL)
-		return root;
-	root->next=NULL;
-	return Helper(root);
+	for(it=m.begin();it!=m.end();it++)
+		cout<<it->second<<" ";
+	cout<<endl;
+	return;
 }
 
 int main()
@@ -110,12 +90,8 @@ int main()
 	vector<int> vec(n);
 	for(int i=0;i<n;i++)
 		cin>>vec[i];
-
 	TreeNode *root=NULL;
 	root=createTree(root,vec);
-	inorder(root);
-	cout<<endl;	
-	root=populateNextPointers(root);
-	printNextPointers(root);
+	diagonalSum(root);
 	return 0;
 }

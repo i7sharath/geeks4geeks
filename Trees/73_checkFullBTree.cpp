@@ -5,7 +5,7 @@ using namespace std;
 struct TreeNode
 {
 	int data;
-	TreeNode *left,*right,*next;
+	TreeNode *left,*right;
 };
 
 TreeNode *createNewNode(int data)
@@ -16,7 +16,6 @@ TreeNode *createNewNode(int data)
 	newNode->data=data;
 	newNode->left=NULL;
 	newNode->right=NULL;
-	newNode->next=NULL;
 	return newNode;
 }
 
@@ -61,46 +60,13 @@ void inorder(TreeNode *root)
 	return;
 }
 
-void printNextPointers(TreeNode *root)
+int checkFullBTree(TreeNode *root)
 {
-	if(root==NULL)
-		return;
-	if(root)
-	{
-		cout<<root->data<<":";
-		if(root->next)
-			cout<<root->next->data;
-		cout<<endl;
-	}
-	printNextPointers(root->left);
-	printNextPointers(root->right);
-	return;
-}
-
-TreeNode *Helper(TreeNode *root)
-{
-	if(root==NULL)
-		return root;
-	if(root->left)
-		root->left->next=root->right;
-	if(root->right)
-	{
-		if(root->next)
-			root->right->next=root->next->left;
-		else
-			root->right->next=NULL;
-	}
-	Helper(root->left);
-	Helper(root->right);
-	return root;
-}
-
-TreeNode *populateNextPointers(TreeNode *root)
-{
-	if(root==NULL)
-		return root;
-	root->next=NULL;
-	return Helper(root);
+	if(root==NULL || (root->left==NULL && root->right==NULL))
+		return 1;
+	if(root->left==NULL ||  root->right==NULL)
+		return false;
+	return checkFullBTree(root->left) && checkFullBTree(root->right);
 }
 
 int main()
@@ -110,12 +76,12 @@ int main()
 	vector<int> vec(n);
 	for(int i=0;i<n;i++)
 		cin>>vec[i];
-
 	TreeNode *root=NULL;
 	root=createTree(root,vec);
-	inorder(root);
-	cout<<endl;	
-	root=populateNextPointers(root);
-	printNextPointers(root);
+	int flag=checkFullBTree(root);
+	if(flag)
+		cout<<"true"<<endl;
+	else
+		cout<<"False"<<endl;
 	return 0;
 }

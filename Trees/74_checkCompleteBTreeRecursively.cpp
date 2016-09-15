@@ -5,7 +5,7 @@ using namespace std;
 struct TreeNode
 {
 	int data;
-	TreeNode *left,*right,*next;
+	TreeNode *left,*right;
 };
 
 TreeNode *createNewNode(int data)
@@ -16,7 +16,6 @@ TreeNode *createNewNode(int data)
 	newNode->data=data;
 	newNode->left=NULL;
 	newNode->right=NULL;
-	newNode->next=NULL;
 	return newNode;
 }
 
@@ -61,47 +60,25 @@ void inorder(TreeNode *root)
 	return;
 }
 
-void printNextPointers(TreeNode *root)
+int checkCompleteBTree(TreeNode *root,int &leaflevel,int level)
 {
 	if(root==NULL)
-		return;
-	if(root)
+		return 1;
+	if(root->left && root->right==NULL || (root->right && root->left==NULL))
+		return 0;
+	if(root->left==NULL && root->right==NULL)
 	{
-		cout<<root->data<<":";
-		if(root->next)
-			cout<<root->next->data;
-		cout<<endl;
+		if(leaflevel==0)
+		{
+			leaflevel=level;
+			return 1;
+		}
+		return (leaflevel==level);
+
 	}
-	printNextPointers(root->left);
-	printNextPointers(root->right);
-	return;
+	return checkCompleteBTree(root->left,leaflevel,level+1) && checkCompleteBTree(root->right,leaflevel,level+1);
 }
 
-TreeNode *Helper(TreeNode *root)
-{
-	if(root==NULL)
-		return root;
-	if(root->left)
-		root->left->next=root->right;
-	if(root->right)
-	{
-		if(root->next)
-			root->right->next=root->next->left;
-		else
-			root->right->next=NULL;
-	}
-	Helper(root->left);
-	Helper(root->right);
-	return root;
-}
-
-TreeNode *populateNextPointers(TreeNode *root)
-{
-	if(root==NULL)
-		return root;
-	root->next=NULL;
-	return Helper(root);
-}
 
 int main()
 {
@@ -110,12 +87,13 @@ int main()
 	vector<int> vec(n);
 	for(int i=0;i<n;i++)
 		cin>>vec[i];
-
 	TreeNode *root=NULL;
 	root=createTree(root,vec);
-	inorder(root);
-	cout<<endl;	
-	root=populateNextPointers(root);
-	printNextPointers(root);
+	int leaflevel=0,level=0;
+	int flag=checkCompleteBTree(root,leaflevel,level);
+	if(flag)
+		cout<<"true"<<endl;
+	else
+		cout<<"False"<<endl;
 	return 0;
 }
