@@ -41,7 +41,6 @@ int main()
 		for(int i=0;i<n;i++)
 			cin>>vec[i];
 		cout<<MaxDiff(vec)<<endl;
-
 	}
 	return 0;
 }
