@@ -60,27 +60,71 @@ void inorder(TreeNode *root)
 	return;
 }
 
-void rightView(TreeNode *root,vector<int> & rightvec,int index)
+void printLeftNodes(TreeNode *root)
 {
-	if(root)
+	if(root==NULL)
+		return;
+	while(root)
 	{
-		if(index+1> rightvec.size())
-			rightvec.push_back(root->data);
-		rightView(root->right,rightvec,index+1);
-		rightView(root->left,rightvec,index+1);
+		if(root->left)
+		{
+			cout<<root->data<<" ";
+			root=root->left;
+		}
+		else if(root->right)
+		{
+			cout<<root->data<<" ";
+			root=root->right;
+		}
+		else
+			break;
 	}
 	return;
 }
 
-void leftView(TreeNode *root,vector<int> & leftvec,int index)
+void printRightNodes(TreeNode *root)
 {
+	if(root==NULL)
+		return;
 	if(root)
 	{
-		if(index+1 > leftvec.size())
-			leftvec.push_back(root->data);
-		leftView(root->left,leftvec,index+1);
-		leftView(root->right,leftvec,index+1);
+		if(root->right)
+		{
+			printRightNodes(root->right);
+			cout<<root->data<<" ";
+		}
+		else if(root->left)
+		{	
+			printRightNodes(root->left);
+			cout<<root->data<<" ";
+		}
 	}
+	return;
+}
+
+void printLeafs(TreeNode *root)
+{
+	if(root==NULL)
+		return;
+	if(root->left==NULL && root->right==NULL)
+	{
+		cout<<root->data<<" ";
+		return;
+	}	
+	printLeafs(root->left);
+	printLeafs(root->right);
+	return;
+}
+
+void boundaryTraversal(TreeNode *root)
+{
+	if(root==NULL)
+		return;
+	cout<<root->data<<" ";
+	printLeftNodes(root->left);
+	printLeafs(root->left);
+	printLeafs(root->right);
+	printRightNodes(root->right);
 	return;
 }
 
@@ -94,26 +138,7 @@ int main()
 
 	TreeNode *root=NULL;
 	root=createTree(root,vec);
-	inorder(root);
-	cout<<endl;
 
-	if(root==NULL)
-		return 0;
-
-	vector<int> leftvec;
-	vector<int> rightvec;
-
-	int index=0;
-	rightView(root,rightvec,index);
-	index=0;
-	leftView(root,leftvec,index);
-
-	for(int i=rightvec.size()-1;i>0;i--)
-		leftvec.push_back(rightvec[i]);
-
-	for(int i=0;i<leftvec.size();i++)
-		cout<<leftvec[i]<<" ";
-	cout<<endl;
-
+	boundaryTraversal(root);
 	return 0;
 }
